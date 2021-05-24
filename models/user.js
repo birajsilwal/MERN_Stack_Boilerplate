@@ -43,6 +43,7 @@ userScheme.pre('save', function( next ) {
       bcrypt.hash(user.password, salt, function(err, hash) {
         if (err) return next (err)
         user.password = hash
+        next()
       })
     })
   } else {
@@ -50,6 +51,7 @@ userScheme.pre('save', function( next ) {
   }
 });
 
+// compares user given password with the database stored password
 userScheme.methods.comparePassword = function(plainPassword, callBack) {
   bcrypt.compare(plainPassword, this.password, function(err, isMatch) {
     if(err) return callBack(err);
@@ -57,8 +59,10 @@ userScheme.methods.comparePassword = function(plainPassword, callBack) {
   })
 }
 
+// generates token for user
 userScheme.methods.generateToken = function( callBack ) {
   var user = this;
+  // encoded userid with secret
   var token = jwt.sign(user._id.toHexString(), 'secret')
 
   user.token = token;
@@ -66,6 +70,19 @@ userScheme.methods.generateToken = function( callBack ) {
     if(err) return callBack(err)
     callBack(null, user)
   })
+}
+
+// find user with the token and decode user id
+userScheme.statics.findByToken = function (token, callBack) {
+  var user = this
+  // decode userid with token and secret
+  jwt.verify(token, 'secret', function(err, decode) {
+    // find user in the user schema
+    user.findOne({"_id":decode, "token":token}, function(err, user) {
+      if(err) return callBack(err)
+      callBack(null, user)
+    })
+  }) 
 }
 
 const User = mongoose.model('User', userScheme)

@@ -4,7 +4,8 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const config = require('./config/key')
-const { User } = require('./model/user')
+const { User } = require('./models/user')
+const { auth} = require('./middleware/auth')
 
 mongoose.connect(config.mongoURI, 
     {useNewUrlParser: true})
@@ -19,6 +20,20 @@ app.get('/', (req, res) => {
   res.json("biraj")
 })
 
+// authenticate user
+app.get("/api/user/auth", auth, (req, res) => {
+  // user req is successful so responding with status 200
+  res.status(200).json({
+    _id: req._id,
+    isAuth: true,
+    email: req.user.email,
+    name: req.user.name,
+    lastname: req.user.lastname,
+    role: req.user.role
+  })
+})
+
+// register user
 app.post('/api/users/register', (req, res) => {
   const user = new User(req.body)
   // hasing password with bcrypt
@@ -31,6 +46,7 @@ app.post('/api/users/register', (req, res) => {
   })
 })
 
+// login user
 app.post('/api/user/login', (req, res) => {
   // find the email in the database
   // if there is existing user, return user otherwise error
@@ -63,4 +79,4 @@ app.post('/api/user/login', (req, res) => {
 
 
 
-app.listen(5000);
+app.listen(3000);
