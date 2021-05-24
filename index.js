@@ -5,7 +5,7 @@ const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const config = require('./config/key')
 const { User } = require('./models/user')
-const { auth} = require('./middleware/auth')
+const { auth } = require('./middleware/auth')
 
 mongoose.connect(config.mongoURI, 
     {useNewUrlParser: true})
@@ -77,6 +77,17 @@ app.post('/api/user/login', (req, res) => {
   })
 })
 
-
+// logout user
+app.get('/api/user/logout', auth, (req, res) => {
+  User.findOneAndUpdate(
+    {_id: req.user._id}, 
+    {token: ""}, 
+    (err, doc) => {
+      if(err) return res.json({ success: false, err})
+      return res.status(200).send({
+        success: true
+      })
+    })
+})
 
 app.listen(3000);
