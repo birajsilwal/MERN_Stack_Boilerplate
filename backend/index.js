@@ -3,9 +3,9 @@ const app = express();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
-const config = require('./backend/config/key')
-const { User } = require('./backend/models/user')
-const { auth } = require('./backend/middleware/auth')
+const config = require('./config/key')
+const { User } = require('./models/user')
+const { auth } = require('./middleware/auth')
 
 mongoose.connect(config.mongoURI, 
     {useNewUrlParser: true})
