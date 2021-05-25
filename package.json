@@ -3,9 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "engine": {
+    "node": "16.1.0",
+    "npm": "7.11.2"
+  },
   "scripts": {
-    "start": "node index.js",
-    "backend": "nodemon index.js"
+    "start": "node backend/index.js",
+    "backend": "nodemon backend/index.js"
   },
   "author": "",
   "license": "ISC",

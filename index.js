@@ -3,9 +3,9 @@ const app = express();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
-const config = require('./config/key')
-const { User } = require('./models/user')
-const { auth } = require('./middleware/auth')
+const config = require('./backend/config/key')
+const { User } = require('./backend/models/user')
+const { auth } = require('./backend/middleware/auth')
 
 mongoose.connect(config.mongoURI, 
     {useNewUrlParser: true})
@@ -90,4 +90,8 @@ app.get('/api/user/logout', auth, (req, res) => {
     })
 })
 
-app.listen(3000);
+const port = process.env.PORT || 3000
+
+app.listen(port, () => {
+  console.log(`Server running at ${port}......`)
+});
